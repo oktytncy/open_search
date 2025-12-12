@@ -156,7 +156,7 @@ Let’s start simple and create an index that supports normal search + correct c
 
 > Run the below script in Dev Tools:
 
-```json
+```http
 PUT streamflix_titles
 {
   "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
@@ -185,12 +185,13 @@ PUT streamflix_titles
 
 ✅ What you should see:
 
-```json
+```http
 "acknowledged": true
 ```
 
 Then verify count:
-```json
+
+```http
 GET streamflix_titles/_count
 ```
 
