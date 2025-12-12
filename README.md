@@ -194,5 +194,101 @@ GET streamflix_titles/_count
 ```
 
 <p align="middle">
-<img src="images/1.png" alt="drawing" width="900"/>
+    <img src="images/2.png" alt="drawing" width="900"/>
 </p>
+
+##### Step 2 — Insert 3 titles
+
+Run these in Dev Tools one by one:
+
+###### 2.1 Add title 1
+
+```console
+POST streamflix_titles/_doc/T-001
+{
+  "title_id": "T-001",
+  "title": "Orbital Heist",
+  "description": "A science fiction crew plans a heist in low orbit.",
+  "type": "movie",
+  "genres": ["sci-fi","thriller"],
+  "release_date": "2024-09-12",
+  "runtime_min": 116,
+  "rating": 4.4,
+  "languages": ["en"],
+  "cast": [
+    {"name":"Mina Kaya","role":"Captain"},
+    {"name":"Jonas Reed","role":"Engineer"}
+  ]
+}
+```
+
+###### Add title 2
+
+```console
+POST streamflix_titles/_doc/T-002
+{
+  "title_id": "T-002",
+  "title": "Canal Nights",
+  "description": "A romantic comedy set in Amsterdam—bikes, rain, and one missed tram.",
+  "type": "movie",
+  "genres": ["romcom"],
+  "release_date": "2023-02-10",
+  "runtime_min": 98,
+  "rating": 4.0,
+  "languages": ["en","nl"],
+  "cast": [
+    {"name":"Elise van Dijk","role":"Lead"},
+    {"name":"Marco Silva","role":"Lead"}
+  ]
+}
+```
+
+###### Add title 3
+
+```console
+POST streamflix_titles/_doc/T-003
+{
+  "title_id": "T-003",
+  "title": "Shadow Protocol",
+  "description": "A suspense thriller about a leaked key, a false alarm, and a chase.",
+  "type": "series",
+  "genres": ["thriller"],
+  "release_date": "2025-01-14",
+  "runtime_min": 50,
+  "rating": 4.1,
+  "languages": ["en"],
+  "cast": [
+    {"name":"Mina Kaya","role":"Detective"},
+    {"name":"Ari Patel","role":"Analyst"}
+  ]
+}
+```
+
+###### Confirm you have 3 docs
+
+```console
+GET streamflix_titles/_count
+```
+
+##### Search in description
+
+```console
+GET streamflix_titles/_search
+{
+  "query": {
+    "match": {
+      "description": "science fiction heist"
+    }
+  }
+}
+```
+<p align="middle">
+    <img src="images/3.png" alt="drawing" width="900"/>
+</p>
+
+> ---
+> What you should see 🔦
+> - hits.total.value should be >= 1
+> - Orbital Heist should be near the top
+>
+> ---
