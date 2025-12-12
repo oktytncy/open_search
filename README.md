@@ -150,56 +150,21 @@ In OpenSearch, you don’t just dump JSON and hope for the best. You first decid
 3. How arrays of objects should behave
 
 
+##### Step 1: Create a basic Titles index (no synonyms, no autocomplete yet)
 
-```yaml
+Let’s start simple and create an index that supports normal search + correct cast structure.
+
+> Run the below script in Dev Tools:
+
+```json
 PUT streamflix_titles
 {
-  "settings": {
-    "number_of_shards": 1,
-    "number_of_replicas": 0,
-    "analysis": {
-      "filter": {
-        "sf_synonyms": {
-          "type": "synonym_graph",
-          "lenient": true,
-          "synonyms": [
-            "sci-fi, science fiction",
-            "romcom, romantic comedy",
-            "docu, documentary",
-            "kids, children",
-            "thriller, suspense"
-          ]
-        },
-        "sf_autocomplete": {
-          "type": "edge_ngram",
-          "min_gram": 2,
-          "max_gram": 20
-        }
-      },
-      "analyzer": {
-        "sf_search": {
-          "type": "custom",
-          "tokenizer": "standard",
-          "filter": [ "lowercase", "asciifolding", "sf_synonyms" ]
-        },
-        "sf_autocomplete_index": {
-          "type": "custom",
-          "tokenizer": "standard",
-          "filter": [ "lowercase", "asciifolding", "sf_autocomplete" ]
-        }
-      }
-    }
-  },
+  "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
   "mappings": {
     "properties": {
       "title_id":     { "type": "keyword" },
-      "title": {
-        "type": "text",
-        "analyzer": "sf_autocomplete_index",
-        "search_analyzer": "sf_search",
-        "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } }
-      },
-      "description":  { "type": "text", "analyzer": "sf_search" },
+      "title":        { "type": "text", "fields": { "keyword": { "type": "keyword" } } },
+      "description":  { "type": "text" },
       "type":         { "type": "keyword" },
       "genres":       { "type": "keyword" },
       "release_date": { "type": "date" },
@@ -217,3 +182,18 @@ PUT streamflix_titles
   }
 }
 ```
+
+✅ What you should see:
+
+```json
+"acknowledged": true
+```
+
+Then verify count:
+```json
+GET streamflix_titles/_count
+```
+
+<p align="middle">
+<img src="images/1.png" alt="drawing" width="900"/>
+</p>
