@@ -112,7 +112,7 @@ Dev Tools is basically **curl, but inside the UI**. You paste REST requests (GET
     > ---
 
     <p align="middle">
-    <img src="images/1.png" alt="drawing" width="900"/>
+        <img src="images/1.png" alt="drawing" width="900"/>
     </p>
 
     > ---
@@ -136,7 +136,6 @@ Dev Tools is basically **curl, but inside the UI**. You paste REST requests (GET
 > - **Nested fields** (cast members with role + name matched together)
 > - **Analytics** (top genres, watch time by device, watch activity over time)
 
-
 #### Create the indexes
 
 ##### Titles index: search + synonyms + autocomplete + nested cast
@@ -149,14 +148,13 @@ In OpenSearch, you don’t just dump JSON and hope for the best. You first decid
 2. How text should be understood (normal search, synonyms, autocomplete)
 3. How arrays of objects should behave
 
-
 ##### Step 1: Create a basic Titles index (no synonyms, no autocomplete yet)
 
 Let’s start simple and create an index that supports normal search + correct cast structure.
 
 > Run the below script in Dev Tools:
 
-```http
+```console
 PUT streamflix_titles
 {
   "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
@@ -185,13 +183,13 @@ PUT streamflix_titles
 
 ✅ What you should see:
 
-```http
+```console
 "acknowledged": true
 ```
 
 Then verify count:
 
-```http
+```console
 GET streamflix_titles/_count
 ```
 
