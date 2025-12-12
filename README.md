@@ -99,7 +99,7 @@ Dev Tools is basically **curl, but inside the UI**. You paste REST requests (GET
 
 1. Check your OpenSearch is healthy.
 
-    ```curl
+    ```console
     GET _cluster/health
     ```
 
