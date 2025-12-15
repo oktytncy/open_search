@@ -282,6 +282,7 @@ GET streamflix_titles/_search
   }
 }
 ```
+
 <p align="middle">
     <img src="images/3.png" alt="drawing" width="900"/>
 </p>
@@ -292,3 +293,103 @@ GET streamflix_titles/_search
 > - Orbital Heist should be near the top
 >
 > ---
+
+- You used:
+  
+  ```console
+  "match": { "description": "science fiction heist" }
+  ```
+**Meaning:** `Find documents where the meaning/words match.` OpenSearch breaks text into tokens and scores results (_score).
+
+##### Exact match using
+
+Your title field is text, but OpenSearch also created title.keyword (exact version).
+
+```console
+GET streamflix_titles/_search
+{
+  "_source": ["title_id","title"],
+  "query": {
+    "term": { "title.keyword": "Orbital Heist" }
+  }
+}
+```
+
+- **Expected:** 1 hit.
+
+Now try a tiny change (lowercase):
+
+```console
+GET streamflix_titles/_search
+{
+  "_source": ["title_id","title"],
+  "query": {
+    "term": { "title.keyword": "orbital heist" }
+  }
+}
+```
+
+- **Expected:** 0 hits - because keyword is exact + case-sensitive.
+
+Text match is more forgiving (match)
+
+```console
+GET streamflix_titles/_search
+{
+  "_source": ["title_id","title"],
+  "query": {
+    "match": { "title": "orbital heist" }
+  }
+}
+```
+
+- **Expected:** It should find Orbital Heist even with different casing.
+
+##### Filters (no scoring, just rules)
+
+Filters are useful for things like genre/type/date.
+
+```console
+GET streamflix_titles/_search
+{
+  "_source": ["title_id","title","type","genres","release_date"],
+  "query": {
+    "bool": {
+      "filter": [
+        { "term":  { "type": "movie" } },
+        { "term":  { "genres": "thriller" } },
+        { "range": { "release_date": { "gte": "2024-01-01" } } }
+      ]
+    }
+  }
+}
+```
+
+**Meaning:** `Give me titles that match all these conditions.`
+
+##### Why nested for cast
+
+Because cast is an array of objects (name + role), and we want `name + role` to match inside the same cast entry.
+
+
+```console
+GET streamflix_titles/_search
+{
+  "_source": ["title_id","title","cast"],
+  "query": {
+    "nested": {
+      "path": "cast",
+      "query": {
+        "bool": {
+          "must": [
+            { "term": { "cast.name.keyword": "Mina Kaya" } },
+            { "term": { "cast.role": "Detective" } }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+- **Expected:** It should return the title where Mina Kaya is actually a Detective.
